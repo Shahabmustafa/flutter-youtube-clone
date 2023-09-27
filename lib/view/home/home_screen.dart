@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:youtube_clone/api/apis.dart';
+
+import '../../model/user_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -9,31 +12,37 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print(UserModel().photoUrl);
+  }
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Column(
-        children: [
-          InkWell(
-            onTap: (){
+      body: InkWell(
+        onTap: (){
 
-            },
-            child: Container(
-              height: 220,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey
+        },
+        child: Container(
+          height: size.height * 0.35,
+          child: Column(
+            children: [
+              Container(
+                height: size.height * 0.25,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.grey
+                ),
               ),
-            ),
+              ListTile(
+                leading: CircleAvatar(),
+                title: Text("Full SEO Course and Tutorial in Hindi"),
+                subtitle: Text("shahab mustafa 8 months ago"),
+              ),
+            ],
           ),
-          ListTile(
-            leading: CircleAvatar(),
-            title: Text("Full SEO Course and Tutorial in Hindi"),
-            subtitle: Text("shahab mustafa 8 months ago"),
-            onTap: (){
-
-            },
-          ),
-        ],
+        ),
       )
     );
   }
