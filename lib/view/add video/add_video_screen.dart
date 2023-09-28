@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
 
 class AddVideoPage extends StatefulWidget {
   const AddVideoPage({Key? key}) : super(key: key);
@@ -12,8 +13,21 @@ class AddVideoPage extends StatefulWidget {
 }
 
 class _AddVideoPageState extends State<AddVideoPage> {
-  String? _image;
+  File? _video;
   PlatformFile? pickedFile;
+  ImagePicker imagePicker = ImagePicker();
+  VideoPlayerController _videoPlayerController = VideoPlayerController as VideoPlayerController;
+
+  _videoPicker()async{
+    final video = await imagePicker.pickVideo(source: ImageSource.camera);
+    _video = File(video!.path);
+    _videoPlayerController = VideoPlayerController.file(_video!)..initialize().then((value){
+      setState(() {
+
+      });
+      _videoPlayerController.play();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,26 +54,14 @@ class _AddVideoPageState extends State<AddVideoPage> {
                       ListTile(
                         leading: Icon(Icons.camera_alt),
                         title: Text('upload to Camera'),
-                        onTap: ()async{
-                          final ImagePicker picker = ImagePicker();
-                          final XFile? files = await picker.pickImage(source: ImageSource.camera);
-                          if (files != null) {
-                            setState(() {
-                              _image = files.path;
-                            });
-                            Navigator.pop(context);
-                          }
-                        },
+                        onTap: ()async{},
                       ),
                       ListTile(
                         leading: Icon(Icons.photo),
                         title: Text('upload to Gallery'),
                         onTap: ()async{
-                          final result = await FilePicker.platform.pickFiles();
-                          setState(() {
-                            pickedFile = result!.files.first;
-                          });
-                        },
+                          _videoPicker();
+                        }
                       ),
                       ListTile(
                         leading: Icon(Icons.edit),
