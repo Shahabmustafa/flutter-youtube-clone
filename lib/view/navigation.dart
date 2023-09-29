@@ -1,15 +1,15 @@
-
-
-
 import 'package:flutter/material.dart';
+import 'package:youtube_clone/api/apis.dart';
 import 'package:youtube_clone/view/add%20video/add_video_screen.dart';
 import 'package:youtube_clone/view/home/home_screen.dart';
 import 'package:youtube_clone/view/library/library_screen.dart';
 import 'package:youtube_clone/view/short/short_screen.dart';
 import 'package:youtube_clone/view/subscription/subscription_screen.dart';
+import '../model/user_model.dart';
 
 class BottomNavigation extends StatefulWidget {
-  const BottomNavigation({Key? key}) : super(key: key);
+  BottomNavigation({Key? key}) : super(key: key);
+  // final UserModel user;
 
   @override
   State<BottomNavigation> createState() => _BottomNavigationState();
@@ -80,7 +80,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
           SizedBox(
             width: size.width * 0.035,
           ),
-          Icon(Icons.person_pin,size: 25,),
+          CircleAvatar(
+            backgroundImage: NetworkImage(APIs.user.photoURL.toString()),
+          ),
+          SizedBox(
+            width: size.width * 0.035,
+          ),
         ],
       ),
       body: Center(
