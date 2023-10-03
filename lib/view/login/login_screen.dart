@@ -1,7 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:youtube_clone/api/apis.dart';
+import 'package:youtube_clone/helper/dialogs.dart';
+import 'package:youtube_clone/model/user_model.dart';
 
+import '../../api/google_auth.dart';
 import '../navigation.dart';
 
 class LoginPage extends StatefulWidget {
@@ -38,7 +42,18 @@ class _LoginPageState extends State<LoginPage> {
             ),
             InkWell(
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavigation()));
+                Dialogs.showProgressBar(context);
+                try{
+                  signInWithGoogle().then((value){
+                    APIs.createUser().then((value){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavigation()));
+                    });
+                  }).onError((error, stackTrace){
+
+                  });
+                }catch(e){
+
+                }
               },
               child: Container(
                 height: 55,

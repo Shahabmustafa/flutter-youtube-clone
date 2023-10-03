@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 import 'package:youtube_clone/api/apis.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../model/user_model.dart';
 
@@ -11,38 +14,65 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  VideoPlayerController? videoController;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    print(UserModel().photoUrl);
   }
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      body: InkWell(
-        onTap: (){
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('post').doc(APIs.user.uid).collection("videoUpload").snapshots(),
+        builder: (context,snapshot){
+          if(snapshot.hasData){
+            return ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder:(context,index){
+                  var data = snapshot.data!.docs[index];
+                  videoController = VideoPlayerController.networkUrl(Uri.parse(data["videoUrl"]))..initialize().then((value){
+                    setState(() {});
+                    videoController!.play();
+                    videoController!.setLooping(true);
+                  });
+                  return InkWell(
+                    onTap: (){
 
+                    },
+                    child: Container(
+                      height: size.height * 0.56,
+                      child: Column(
+                        children: [
+                          AspectRatio(
+                            aspectRatio: videoController!.value.aspectRatio,
+                            child: VideoPlayer(videoController!),
+                          ),
+                          // Container(
+                          //   height: size.height * 0.25,
+                          //   width: double.infinity,
+                          //   decoration: BoxDecoration(
+                          //     color: Colors.grey,
+                          //   ),
+                          //   // child: ,
+                          // ),
+                          ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(data["profileUrl"]),
+                            ),
+                            title: Text(data["videoContent"]),
+                            subtitle: Text(data["userName"]),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+            );
+          }else{
+            return Center(child: CircularProgressIndicator());
+          }
         },
-        child: Container(
-          height: size.height * 0.35,
-          child: Column(
-            children: [
-              Container(
-                height: size.height * 0.25,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey
-                ),
-              ),
-              ListTile(
-                leading: CircleAvatar(),
-                title: Text("Full SEO Course and Tutorial in Hindi"),
-                subtitle: Text("shahab mustafa 8 months ago"),
-              ),
-            ],
-          ),
-        ),
       )
     );
   }

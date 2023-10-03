@@ -80,8 +80,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
           SizedBox(
             width: size.width * 0.035,
           ),
-          CircleAvatar(
-            backgroundImage: NetworkImage(APIs.user.photoURL.toString()),
+          InkWell(
+            onTap: (){
+              APIs.auth.signOut().then((value){});
+            },
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(APIs.user.photoURL.toString()),
+            ),
           ),
           SizedBox(
             width: size.width * 0.035,
